@@ -198,6 +198,27 @@
             margin-bottom: 8px;
             font-size: 0.9em;
         }
+
+        .completed-section {
+            background: #f0fff4;
+            border-left: 4px solid #27ae60;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .completed-title {
+            color: #27ae60;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .completed-item {
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #27ae60;
+        }
         
         .auto-refresh {
             position: fixed;
@@ -249,14 +270,19 @@
     <div class="container">
         <div class="header">
             <h1>📊 Project Dashboard</h1>
-            <div class="last-updated">Last Updated: February 18, 2026 - 5:08 PM EST</div>
+            <div class="last-updated">Last Updated: February 18, 2026 - 5:24 PM EST</div>
         </div>
         
         <div class="content">
+            <!-- Recently Completed Section -->
+            <div class="completed-section">
+                <div class="completed-title">✅ RECENTLY COMPLETED</div>
+                <div class="completed-item">✅ <strong>BNS:</strong> W9 sent to Renegade Games - payment processing can proceed</div>
+            </div>
+
             <!-- Urgent Items Section -->
             <div class="urgent-section">
                 <div class="urgent-title">⚡ URGENT ITEMS</div>
-                <div class="urgent-item">🔴 <strong>BNS:</strong> W9 needed for Renegade Games ($5860.60 payment)</div>
                 <div class="urgent-item">🔴 <strong>BNS:</strong> Taxes and 1099s due February 15th</div>
                 <div class="urgent-item">🔴 <strong>SKYX:</strong> Heater Fan Dedicated Site</div>
                 <div class="urgent-item">🟡 <strong>Multiple:</strong> Tax filing deadlines approaching</div>
@@ -303,21 +329,21 @@
                 </div>
 
                 <!-- By Night Studios -->
-                <div class="project-card attention">
+                <div class="project-card active">
                     <div class="project-title">
-                        <span class="status-indicator status-attention"></span>
+                        <span class="status-indicator status-active"></span>
                         By Night Studios
-                        <span class="task-count urgent">10 open</span>
+                        <span class="task-count urgent">9 open</span>
                     </div>
                     <div class="project-meta">
                         <span>Gaming/Entertainment</span>
-                        <span>Tax deadlines</span>
+                        <span>1 completed today</span>
                     </div>
                     <div class="task-summary">
-                        Urgent: W9 for Renegade, taxes due 2/15
+                        Progress: W9 sent ✅ | Next: taxes due 2/15
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill" style="width: 10%;"></div>
+                        <div class="progress-fill" style="width: 18%;"></div>
                     </div>
                 </div>
 
@@ -388,19 +414,19 @@
                         <div class="metric-label">Active Projects</div>
                     </div>
                     <div class="metric-card">
-                        <span class="metric-number">41</span>
+                        <span class="metric-number">40</span>
                         <div class="metric-label">Open Tasks</div>
                     </div>
                     <div class="metric-card">
-                        <span class="metric-number">16</span>
+                        <span class="metric-number">17</span>
                         <div class="metric-label">Completed Tasks</div>
                     </div>
                     <div class="metric-card">
-                        <span class="metric-number">4</span>
+                        <span class="metric-number">3</span>
                         <div class="metric-label">Urgent Items</div>
                     </div>
                     <div class="metric-card">
-                        <span class="metric-number">28%</span>
+                        <span class="metric-number">30%</span>
                         <div class="metric-label">Overall Progress</div>
                     </div>
                 </div>
@@ -410,7 +436,7 @@
             <div class="footer">
                 💡 This dashboard reflects your complete project portfolio from Google Drive.<br>
                 Talk to Sam to update project status, add tasks, or modify priorities.<br><br>
-                <strong>Data Source:</strong> projects-current.md (last updated Feb 12, 2026)
+                <strong>Recent Update:</strong> Renegade W9 completed - payment can now process
             </div>
         </div>
     </div>
