@@ -40,6 +40,33 @@
             opacity: 0.8;
             font-size: 0.9em;
         }
+
+        .view-controls {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .view-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+
+        .view-button:hover {
+            background: #2980b9;
+        }
+
+        .view-button.active {
+            background: #2c3e50;
+        }
         
         .content {
             padding: 30px;
@@ -58,11 +85,13 @@
             padding: 20px;
             transition: all 0.3s ease;
             position: relative;
+            cursor: pointer;
         }
         
         .project-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-color: #3498db;
         }
         
         .project-card.active {
@@ -78,6 +107,11 @@
         .project-card.blocked {
             border-color: #e74c3c;
             background: #fff8f8;
+        }
+
+        .project-card.expanded {
+            grid-column: 1 / -1;
+            max-width: none;
         }
         
         .status-indicator {
@@ -98,6 +132,9 @@
             font-weight: 600;
             margin: 0 0 10px 0;
             color: #2c3e50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .project-meta {
@@ -143,6 +180,105 @@
             height: 100%;
             background: #27ae60;
             transition: width 0.3s ease;
+        }
+
+        .task-details {
+            display: none;
+            margin-top: 20px;
+            border-top: 1px solid #ecf0f1;
+            padding-top: 20px;
+        }
+
+        .task-details.show {
+            display: block;
+        }
+
+        .task-list {
+            margin-top: 15px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f8f9fa;
+            font-size: 0.9em;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-status {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .task-status.todo {
+            background: #ecf0f1;
+            border: 2px solid #bdc3c7;
+        }
+
+        .task-status.done {
+            background: #27ae60;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+        }
+
+        .task-status.done::after {
+            content: "✓";
+        }
+
+        .task-name {
+            flex: 1;
+            color: #2c3e50;
+        }
+
+        .task-name.completed {
+            text-decoration: line-through;
+            color: #7f8c8d;
+        }
+
+        .all-tasks-view {
+            display: none;
+        }
+
+        .all-tasks-view.show {
+            display: block;
+        }
+
+        .project-section {
+            margin-bottom: 30px;
+            border: 1px solid #ecf0f1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .project-section-header {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #ecf0f1;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .project-section-tasks {
+            padding: 20px;
+        }
+
+        .expand-icon {
+            transition: transform 0.3s ease;
+            color: #7f8c8d;
+        }
+
+        .expand-icon.rotated {
+            transform: rotate(90deg);
         }
         
         .metrics-section {
@@ -242,25 +378,6 @@
             border-radius: 8px;
         }
     </style>
-    <script>
-        // Auto-refresh every 30 seconds
-        setTimeout(function() {
-            location.reload();
-        }, 30000);
-        
-        // Show countdown
-        let countdown = 30;
-        setInterval(function() {
-            countdown--;
-            const element = document.getElementById('countdown');
-            if (element) {
-                element.textContent = countdown;
-                if (countdown <= 0) {
-                    countdown = 30;
-                }
-            }
-        }, 1000);
-    </script>
 </head>
 <body>
     <div class="auto-refresh">
@@ -270,137 +387,437 @@
     <div class="container">
         <div class="header">
             <h1>📊 Project Dashboard</h1>
-            <div class="last-updated">Last Updated: February 18, 2026 - 5:24 PM EST</div>
+            <div class="last-updated">Last Updated: February 18, 2026 - 6:55 PM EST</div>
+        </div>
+
+        <div class="view-controls">
+            <button class="view-button active" onclick="showProjectView()">📋 Project View</button>
+            <button class="view-button" onclick="showAllTasks()">📝 All Tasks</button>
         </div>
         
         <div class="content">
-            <!-- Recently Completed Section -->
-            <div class="completed-section">
-                <div class="completed-title">✅ RECENTLY COMPLETED</div>
-                <div class="completed-item">✅ <strong>BNS:</strong> W9 sent to Renegade Games - payment processing can proceed</div>
+            <div id="project-view">
+                <!-- Recently Completed Section -->
+                <div class="completed-section">
+                    <div class="completed-title">✅ RECENTLY COMPLETED</div>
+                    <div class="completed-item">✅ <strong>BNS:</strong> W9 sent to Renegade Games - payment processing can proceed</div>
+                </div>
+
+                <!-- Urgent Items Section -->
+                <div class="urgent-section">
+                    <div class="urgent-title">⚡ URGENT ITEMS</div>
+                    <div class="urgent-item">🔴 <strong>BNS:</strong> Taxes and 1099s due February 15th</div>
+                    <div class="urgent-item">🔴 <strong>SKYX:</strong> Heater Fan Dedicated Site</div>
+                    <div class="urgent-item">🟡 <strong>Multiple:</strong> Tax filing deadlines approaching</div>
+                </div>
+                
+                <!-- Projects Grid -->
+                <div class="project-grid">
+                    <!-- SKYX -->
+                    <div class="project-card active" onclick="toggleProject('skyx')">
+                        <div class="project-title">
+                            <span>
+                                <span class="status-indicator status-active"></span>
+                                SKYX Platforms
+                                <span class="task-count">9 open</span>
+                            </span>
+                            <span class="expand-icon" id="skyx-icon">▶</span>
+                        </div>
+                        <div class="project-meta">
+                            <span>Smart electrical safety</span>
+                            <span>7 completed</span>
+                        </div>
+                        <div class="task-summary">
+                            Next: Heater Fan Dedicated Site, SKYX.com redesign
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 44%;"></div>
+                        </div>
+                        <div class="task-details" id="skyx-tasks">
+                            <div class="task-list">
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Redesign SKYX.com Site</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Heater Fan Dedicated Site</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Review Rion's TikTok</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Start Posting Boiler Plate TikTok content</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Social Media Management tool</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status done"></div>
+                                    <div class="task-name completed">BigCommerce - Landing Page for Heater Fans</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status done"></div>
+                                    <div class="task-name completed">Influencer Page for Heaterfan, Other</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- THYNK -->
+                    <div class="project-card active" onclick="toggleProject('thynk')">
+                        <div class="project-title">
+                            <span>
+                                <span class="status-indicator status-active"></span>
+                                THYNK
+                                <span class="task-count">5 open</span>
+                            </span>
+                            <span class="expand-icon" id="thynk-icon">▶</span>
+                        </div>
+                        <div class="project-meta">
+                            <span>Education platform</span>
+                            <span>6 completed</span>
+                        </div>
+                        <div class="task-summary">
+                            Next: Clever integration v0, S3 URI mapping
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 55%;"></div>
+                        </div>
+                        <div class="task-details" id="thynk-tasks">
+                            <div class="task-list">
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">How to Integrate Clever into Admin v0</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Document Solution for Admin v1</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">URI/URL mapping for S3 buckets</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status done"></div>
+                                    <div class="task-name completed">Clever Integration Doc</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status done"></div>
+                                    <div class="task-name completed">Website updates requests</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- By Night Studios -->
+                    <div class="project-card active" onclick="toggleProject('bns')">
+                        <div class="project-title">
+                            <span>
+                                <span class="status-indicator status-active"></span>
+                                By Night Studios
+                                <span class="task-count urgent">9 open</span>
+                            </span>
+                            <span class="expand-icon" id="bns-icon">▶</span>
+                        </div>
+                        <div class="project-meta">
+                            <span>Gaming/Entertainment</span>
+                            <span>1 completed today</span>
+                        </div>
+                        <div class="task-summary">
+                            Progress: W9 sent ✅ | Next: taxes due 2/15
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 18%;"></div>
+                        </div>
+                        <div class="task-details" id="bns-tasks">
+                            <div class="task-list">
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Taxes and 1099s (Due 2/15)</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Email Newsletter This Week</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Figure Out How to Do PDF in Shopify</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status done"></div>
+                                    <div class="task-name completed">Send W9 to Renegade Games</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Personal -->
+                    <div class="project-card active" onclick="toggleProject('personal')">
+                        <div class="project-title">
+                            <span>
+                                <span class="status-indicator status-active"></span>
+                                Personal
+                                <span class="task-count">4 open</span>
+                            </span>
+                            <span class="expand-icon" id="personal-icon">▶</span>
+                        </div>
+                        <div class="project-meta">
+                            <span>Life management</span>
+                            <span>3 completed</span>
+                        </div>
+                        <div class="task-summary">
+                            Next: File taxes, schedule colonoscopy
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 43%;"></div>
+                        </div>
+                        <div class="task-details" id="personal-tasks">
+                            <div class="task-list">
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">File Taxes</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Schedule colonoscopy</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status done"></div>
+                                    <div class="task-name completed">Get Garbage Cans Ordered</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Zeeva -->
+                    <div class="project-card attention" onclick="toggleProject('zeeva')">
+                        <div class="project-title">
+                            <span>
+                                <span class="status-indicator status-attention"></span>
+                                Zeeva
+                                <span class="task-count urgent">8 open</span>
+                            </span>
+                            <span class="expand-icon" id="zeeva-icon">▶</span>
+                        </div>
+                        <div class="project-meta">
+                            <span>iOS app + hardware</span>
+                            <span>App store submission</span>
+                        </div>
+                        <div class="task-summary">
+                            Focus: iOS Store acceptance, accelerometer data
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 5%;"></div>
+                        </div>
+                        <div class="task-details" id="zeeva-tasks">
+                            <div class="task-list">
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Get iOS Store Submission Acceptance</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Find Accelerometer Data</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">Record Video Response for Apple Development</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Business Entities -->
+                    <div class="project-card active" onclick="toggleProject('business')">
+                        <div class="project-title">
+                            <span>
+                                <span class="status-indicator status-active"></span>
+                                Business Entities
+                                <span class="task-count">5 open</span>
+                            </span>
+                            <span class="expand-icon" id="business-icon">▶</span>
+                        </div>
+                        <div class="project-meta">
+                            <span>Veanox, SILA, SKEDI</span>
+                            <span>Tax season</span>
+                        </div>
+                        <div class="task-summary">
+                            All: Tax filing requirements
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="task-details" id="business-tasks">
+                            <div class="task-list">
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">File Taxes for Veanox</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">File Taxes for SILA</div>
+                                </div>
+                                <div class="task-item">
+                                    <div class="task-status todo"></div>
+                                    <div class="task-name">File Taxes for SKEDI</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <!-- Urgent Items Section -->
-            <div class="urgent-section">
-                <div class="urgent-title">⚡ URGENT ITEMS</div>
-                <div class="urgent-item">🔴 <strong>BNS:</strong> Taxes and 1099s due February 15th</div>
-                <div class="urgent-item">🔴 <strong>SKYX:</strong> Heater Fan Dedicated Site</div>
-                <div class="urgent-item">🟡 <strong>Multiple:</strong> Tax filing deadlines approaching</div>
-            </div>
-            
-            <!-- Projects Grid -->
-            <div class="project-grid">
-                <!-- SKYX -->
-                <div class="project-card active">
-                    <div class="project-title">
-                        <span class="status-indicator status-active"></span>
-                        SKYX Platforms
-                        <span class="task-count">9 open</span>
-                    </div>
-                    <div class="project-meta">
-                        <span>Smart electrical safety</span>
-                        <span>7 completed</span>
-                    </div>
-                    <div class="task-summary">
-                        Next: Heater Fan Dedicated Site, SKYX.com redesign
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 44%;"></div>
-                    </div>
-                </div>
-
-                <!-- THYNK -->
-                <div class="project-card active">
-                    <div class="project-title">
-                        <span class="status-indicator status-active"></span>
-                        THYNK
-                        <span class="task-count">5 open</span>
-                    </div>
-                    <div class="project-meta">
-                        <span>Education platform</span>
-                        <span>6 completed</span>
-                    </div>
-                    <div class="task-summary">
-                        Next: Clever integration v0, S3 URI mapping
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 55%;"></div>
+            <!-- All Tasks View -->
+            <div id="all-tasks-view" class="all-tasks-view">
+                <div class="project-section">
+                    <div class="project-section-header">🚀 SKYX Platforms (9 open tasks)</div>
+                    <div class="project-section-tasks">
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Redesign SKYX.com Site</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Heater Fan Dedicated Site</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Review Rion's TikTok</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Start Posting Boiler Plate TikTok content</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Social Media Management tool</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status done"></div>
+                            <div class="task-name completed">BigCommerce - Landing Page for Heater Fans</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status done"></div>
+                            <div class="task-name completed">Influencer Page for Heaterfan, Other</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- By Night Studios -->
-                <div class="project-card active">
-                    <div class="project-title">
-                        <span class="status-indicator status-active"></span>
-                        By Night Studios
-                        <span class="task-count urgent">9 open</span>
-                    </div>
-                    <div class="project-meta">
-                        <span>Gaming/Entertainment</span>
-                        <span>1 completed today</span>
-                    </div>
-                    <div class="task-summary">
-                        Progress: W9 sent ✅ | Next: taxes due 2/15
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 18%;"></div>
-                    </div>
-                </div>
-
-                <!-- Personal -->
-                <div class="project-card active">
-                    <div class="project-title">
-                        <span class="status-indicator status-active"></span>
-                        Personal
-                        <span class="task-count">4 open</span>
-                    </div>
-                    <div class="project-meta">
-                        <span>Life management</span>
-                        <span>3 completed</span>
-                    </div>
-                    <div class="task-summary">
-                        Next: File taxes, schedule colonoscopy
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 43%;"></div>
+                <div class="project-section">
+                    <div class="project-section-header">🎓 THYNK (5 open tasks)</div>
+                    <div class="project-section-tasks">
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">How to Integrate Clever into Admin v0</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Document Solution for Admin v1</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">URI/URL mapping for S3 buckets</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status done"></div>
+                            <div class="task-name completed">Clever Integration Doc</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status done"></div>
+                            <div class="task-name completed">Website updates requests</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Zeeva -->
-                <div class="project-card attention">
-                    <div class="project-title">
-                        <span class="status-indicator status-attention"></span>
-                        Zeeva
-                        <span class="task-count urgent">8 open</span>
-                    </div>
-                    <div class="project-meta">
-                        <span>iOS app + hardware</span>
-                        <span>App store submission</span>
-                    </div>
-                    <div class="task-summary">
-                        Focus: iOS Store acceptance, accelerometer data
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 5%;"></div>
+                <div class="project-section">
+                    <div class="project-section-header">🎮 By Night Studios (9 open tasks)</div>
+                    <div class="project-section-tasks">
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Taxes and 1099s (Due 2/15) 🔴</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Email Newsletter This Week</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Figure Out How to Do PDF in Shopify</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status done"></div>
+                            <div class="task-name completed">Send W9 to Renegade Games ✅ Today</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Business Entities -->
-                <div class="project-card active">
-                    <div class="project-title">
-                        <span class="status-indicator status-active"></span>
-                        Business Entities
-                        <span class="task-count">5 open</span>
+                <div class="project-section">
+                    <div class="project-section-header">👤 Personal (4 open tasks)</div>
+                    <div class="project-section-tasks">
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">File Taxes</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Schedule colonoscopy</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status done"></div>
+                            <div class="task-name completed">Get Garbage Cans Ordered</div>
+                        </div>
                     </div>
-                    <div class="project-meta">
-                        <span>Veanox, SILA, SKEDI</span>
-                        <span>Tax season</span>
+                </div>
+
+                <div class="project-section">
+                    <div class="project-section-header">📱 Zeeva (8 open tasks)</div>
+                    <div class="project-section-tasks">
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Get iOS Store Submission Acceptance</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Find Accelerometer Data</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Record Video Response for Apple Development</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">DNS for Two Websites/Admin Sites</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Data Cleanup</div>
+                        </div>
                     </div>
-                    <div class="task-summary">
-                        All: Tax filing requirements
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 0%;"></div>
+                </div>
+
+                <div class="project-section">
+                    <div class="project-section-header">🏢 Business Entities (5 open tasks)</div>
+                    <div class="project-section-tasks">
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">File Taxes for Veanox</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">File Taxes for SILA</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">File Taxes for SKEDI</div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-status todo"></div>
+                            <div class="task-name">Get $ returned for print</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -434,11 +851,72 @@
             
             <!-- Footer -->
             <div class="footer">
-                💡 This dashboard reflects your complete project portfolio from Google Drive.<br>
+                💡 Click projects to expand tasks • Toggle between Project and All Tasks views<br>
                 Talk to Sam to update project status, add tasks, or modify priorities.<br><br>
-                <strong>Recent Update:</strong> Renegade W9 completed - payment can now process
+                <strong>Interactive Dashboard:</strong> Now with clickable projects and comprehensive task views
             </div>
         </div>
     </div>
+
+    <script>
+        // Auto-refresh functionality
+        setTimeout(function() {
+            location.reload();
+        }, 30000);
+        
+        let countdown = 30;
+        setInterval(function() {
+            countdown--;
+            const element = document.getElementById('countdown');
+            if (element) {
+                element.textContent = countdown;
+                if (countdown <= 0) {
+                    countdown = 30;
+                }
+            }
+        }, 1000);
+
+        // View switching
+        function showProjectView() {
+            document.getElementById('project-view').style.display = 'block';
+            document.getElementById('all-tasks-view').classList.remove('show');
+            
+            // Update button states
+            const buttons = document.querySelectorAll('.view-button');
+            buttons[0].classList.add('active');
+            buttons[1].classList.remove('active');
+        }
+
+        function showAllTasks() {
+            document.getElementById('project-view').style.display = 'none';
+            document.getElementById('all-tasks-view').classList.add('show');
+            
+            // Update button states
+            const buttons = document.querySelectorAll('.view-button');
+            buttons[0].classList.remove('active');
+            buttons[1].classList.add('active');
+        }
+
+        // Project expansion functionality
+        function toggleProject(projectId) {
+            const taskDetails = document.getElementById(projectId + '-tasks');
+            const icon = document.getElementById(projectId + '-icon');
+            const projectCard = taskDetails.closest('.project-card');
+            
+            if (taskDetails.classList.contains('show')) {
+                // Collapse
+                taskDetails.classList.remove('show');
+                icon.classList.remove('rotated');
+                icon.textContent = '▶';
+                projectCard.classList.remove('expanded');
+            } else {
+                // Expand
+                taskDetails.classList.add('show');
+                icon.classList.add('rotated');
+                icon.textContent = '▼';
+                projectCard.classList.add('expanded');
+            }
+        }
+    </script>
 </body>
 </html>
