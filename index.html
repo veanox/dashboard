@@ -377,7 +377,40 @@
             background: #f8f9fa;
             border-radius: 8px;
         }
-    </style>
+    
+        /* === Portfolio === */
+        .portfolio-section { margin-top:40px; border-top:2px solid #ecf0f1; padding-top:30px; }
+        .portfolio-header h2 { margin:0 0 4px 0; color:#2c3e50; }
+        .port-updated { font-size:.8em; color:#7f8c8d; margin-bottom:18px; }
+        .port-banner { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+        .pb-item { background:#2c3e50; color:#fff; padding:16px; border-radius:8px; text-align:center; }
+        .pb-label { font-size:.78em; opacity:.75; margin-bottom:4px; }
+        .pb-val { font-size:1.3em; font-weight:700; }
+        .acct-block { margin-bottom:28px; }
+        .acct-header { display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+                       background:#f8f9fa; padding:10px 14px; border-radius:8px 8px 0 0;
+                       border:1px solid #dee2e6; }
+        .acct-name { font-weight:700; color:#2c3e50; }
+        .acct-total { font-size:1.1em; font-weight:700; color:#2c3e50; margin-left:auto; }
+        .acct-stat { font-size:.85em; font-weight:600; }
+        .port-table { width:100%; border-collapse:collapse; font-size:.84em;
+                      border:1px solid #dee2e6; border-top:none; }
+        .port-table th { background:#ecf0f1; padding:7px 11px; text-align:right;
+                         font-weight:600; color:#5d6d7e; font-size:.82em; }
+        .port-table th:first-child { text-align:left; }
+        .port-table td { padding:7px 11px; border-bottom:1px solid #f0f0f0; text-align:right; }
+        .port-table tbody tr:hover { background:#fafafa; }
+        .sym { text-align:left!important; font-weight:700; color:#2c3e50; }
+        .gain { color:#27ae60; }
+        .loss { color:#e74c3c; }
+        .flat { color:#7f8c8d; }
+        @media(max-width:768px){
+          .port-banner{grid-template-columns:repeat(2,1fr);}
+          .port-table{font-size:.75em;}
+          .port-table td,.port-table th{padding:5px 7px;}
+        }
+
+        </style>
 </head>
 <body>
     <div class="auto-refresh">
@@ -387,7 +420,7 @@
     <div class="container">
         <div class="header">
             <h1>📊 Project Dashboard</h1>
-            <div class="last-updated">Last Updated: February 18, 2026 - 6:55 PM EST</div>
+            <div class="last-updated">Last Updated: February 19, 2026 - 08:47 PM EST</div>
         </div>
 
         <div class="view-controls">
@@ -918,5 +951,276 @@
             }
         }
     </script>
+
+    <!-- PORTFOLIO_START -->
+    <div class="portfolio-section">
+      <div class="portfolio-header">
+        <h2>📈 Portfolio</h2>
+        <div class="port-updated">Live via stooq.com · Feb 19, 2026 08:47 PM ET</div>
+      </div>
+
+      <div class="port-banner">
+        <div class="pb-item">
+          <div class="pb-label">Total Value</div>
+          <div class="pb-val">$51,912.05</div>
+        </div>
+        <div class="pb-item">
+          <div class="pb-label">Today P&L</div>
+          <div class="pb-val gain">+$1,124.57</div>
+        </div>
+        <div class="pb-item">
+          <div class="pb-label">Week-over-Week</div>
+          <div class="pb-val flat">+$0.00</div>
+        </div>
+        <div class="pb-item">
+          <div class="pb-label">Total Gain/Loss</div>
+          <div class="pb-val loss">-$17,178.38 (-24.86%)</div>
+        </div>
+      </div>
+
+      <div class="acct-block">
+        <div class="acct-header">
+          <span class="acct-name">ROTH IRA for Minor</span>
+          <span class="acct-total">$10,018.44</span>
+          <span class="acct-stat gain">Today: +$120.30</span>
+          <span class="acct-stat loss">Total: -$1,584.07 (-13.65%)</span>
+        </div>
+        <table class="port-table">
+          <thead><tr>
+            <th>Symbol</th><th>Shares</th><th>Price</th><th>Today</th>
+            <th>Week</th><th>Value</th><th>Cost</th><th>Total G/L</th>
+          </tr></thead>
+          <tbody>
+
+            <tr>
+              <td class="sym">SKYX</td>
+              <td>3,593.703</td>
+              <td>$2.12 <small class="gain">(+0.95%)</small></td>
+              <td class="gain">+$71.87</td>
+              <td class="flat">+0.00%</td>
+              <td>$7,618.65</td>
+              <td>$8,906.85</td>
+              <td class="loss">-$1,288.20 (-14.46%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">INOD</td>
+              <td>20</td>
+              <td>$45.62 <small class="gain">(+4.16%)</small></td>
+              <td class="gain">+$36.40</td>
+              <td class="flat">+0.00%</td>
+              <td>$912.40</td>
+              <td>$1,122.96</td>
+              <td class="loss">-$210.56 (-18.75%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">INTC</td>
+              <td>16.990</td>
+              <td>$44.62 <small class="loss">(-0.73%)</small></td>
+              <td class="loss">-$5.61</td>
+              <td class="flat">+0.00%</td>
+              <td>$758.09</td>
+              <td>$349.98</td>
+              <td class="gain">+$408.11 (+116.61%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">QUBT</td>
+              <td>50</td>
+              <td>$8.23 <small class="gain">(+2.24%)</small></td>
+              <td class="gain">+$9.00</td>
+              <td class="flat">+0.00%</td>
+              <td>$411.50</td>
+              <td>$539.75</td>
+              <td class="loss">-$128.25 (-23.76%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">SNAP</td>
+              <td>47.986</td>
+              <td>$5.00 <small class="gain">(+3.73%)</small></td>
+              <td class="gain">+$8.64</td>
+              <td class="flat">+0.00%</td>
+              <td>$239.93</td>
+              <td>$545.38</td>
+              <td class="loss">-$305.45 (-56.01%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">CRDV</td>
+              <td>400</td>
+              <td>$0.0000 <small class="flat">(+0.00%)</small></td>
+              <td class="flat">+$0.00</td>
+              <td class="flat">+0.00%</td>
+              <td>$0.00</td>
+              <td>$59.72</td>
+              <td class="loss">-$59.72 (-100.00%)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="acct-block">
+        <div class="acct-header">
+          <span class="acct-name">Traditional IRA</span>
+          <span class="acct-total">$41,893.60</span>
+          <span class="acct-stat gain">Today: +$1,004.27</span>
+          <span class="acct-stat loss">Total: -$15,594.32 (-27.13%)</span>
+        </div>
+        <table class="port-table">
+          <thead><tr>
+            <th>Symbol</th><th>Shares</th><th>Price</th><th>Today</th>
+            <th>Week</th><th>Value</th><th>Cost</th><th>Total G/L</th>
+          </tr></thead>
+          <tbody>
+
+            <tr>
+              <td class="sym">SKYX</td>
+              <td>9,138.931</td>
+              <td>$2.12 <small class="gain">(+0.95%)</small></td>
+              <td class="gain">+$182.78</td>
+              <td class="flat">+0.00%</td>
+              <td>$19,374.53</td>
+              <td>$11,488.64</td>
+              <td class="gain">+$7,885.89 (+68.64%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">INTC</td>
+              <td>172.611</td>
+              <td>$44.62 <small class="loss">(-0.73%)</small></td>
+              <td class="loss">-$56.96</td>
+              <td class="flat">+0.00%</td>
+              <td>$7,701.90</td>
+              <td>$3,716.99</td>
+              <td class="gain">+$3,984.91 (+107.21%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">IRE</td>
+              <td>984.062</td>
+              <td>$6.09 <small class="gain">(+11.13%)</small></td>
+              <td class="gain">+$600.28</td>
+              <td class="flat">+0.00%</td>
+              <td>$5,992.94</td>
+              <td>$6,768.77</td>
+              <td class="loss">-$775.83 (-11.46%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">INOD</td>
+              <td>108.610</td>
+              <td>$45.62 <small class="gain">(+4.16%)</small></td>
+              <td class="gain">+$197.67</td>
+              <td class="flat">+0.00%</td>
+              <td>$4,954.79</td>
+              <td>$5,761.50</td>
+              <td class="loss">-$806.71 (-14.00%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">QUBT</td>
+              <td>250</td>
+              <td>$8.23 <small class="gain">(+2.24%)</small></td>
+              <td class="gain">+$45.00</td>
+              <td class="flat">+0.00%</td>
+              <td>$2,057.50</td>
+              <td>$2,706.13</td>
+              <td class="loss">-$648.63 (-23.97%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">IONQ</td>
+              <td>50</td>
+              <td>$33.43 <small class="gain">(+2.17%)</small></td>
+              <td class="gain">+$35.50</td>
+              <td class="flat">+0.00%</td>
+              <td>$1,671.50</td>
+              <td>$2,366.50</td>
+              <td class="loss">-$695.00 (-29.37%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">SKKRF</td>
+              <td>15,061</td>
+              <td>$0.0000 <small class="flat">(+0.00%)</small></td>
+              <td class="flat">+$0.00</td>
+              <td class="flat">+0.00%</td>
+              <td>$0.00</td>
+              <td>$1,807.60</td>
+              <td class="loss">-$1,807.60 (-100.00%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">EEENF</td>
+              <td>101,120</td>
+              <td>$0.0000 <small class="flat">(+0.00%)</small></td>
+              <td class="flat">+$0.00</td>
+              <td class="flat">+0.00%</td>
+              <td>$0.00</td>
+              <td>$2,143.60</td>
+              <td class="loss">-$2,143.60 (-100.00%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">MAPPF</td>
+              <td>12,898</td>
+              <td>$0.0000 <small class="flat">(+0.00%)</small></td>
+              <td class="flat">+$0.00</td>
+              <td class="flat">+0.00%</td>
+              <td>$0.00</td>
+              <td>$1,631.84</td>
+              <td class="loss">-$1,631.84 (-100.00%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">CRDV</td>
+              <td>1,800,000</td>
+              <td>$0.0000 <small class="flat">(+0.00%)</small></td>
+              <td class="flat">+$0.00</td>
+              <td class="flat">+0.00%</td>
+              <td>$0.00</td>
+              <td>$3,090.00</td>
+              <td class="loss">-$3,090.00 (-100.00%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">CATV</td>
+              <td>2,180,699</td>
+              <td>$0.0000 <small class="flat">(+0.00%)</small></td>
+              <td class="flat">+$0.00</td>
+              <td class="flat">+0.00%</td>
+              <td>$0.00</td>
+              <td>$13,448.64</td>
+              <td class="loss">-$13,448.64 (-100.00%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">SEAC</td>
+              <td>25</td>
+              <td>$0.0000 <small class="flat">(+0.00%)</small></td>
+              <td class="flat">+$0.00</td>
+              <td class="flat">+0.00%</td>
+              <td>$0.00</td>
+              <td>$752.50</td>
+              <td class="loss">-$752.50 (-100.00%)</td>
+            </tr>
+
+            <tr>
+              <td class="sym">FBGRX</td>
+              <td>6.234</td>
+              <td>$0.0000 <small class="flat">(+0.00%)</small></td>
+              <td class="flat">+$0.00</td>
+              <td class="flat">+0.00%</td>
+              <td>$0.00</td>
+              <td>$1,664.77</td>
+              <td class="loss">-$1,664.77 (-100.00%)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- PORTFOLIO_END -->
 </body>
 </html>
